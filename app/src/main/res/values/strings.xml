@@ -1,4 +1,10 @@
 <resources>
-    <string name="app_name">PopularMovies</string>
+    <string name="app_name">Movie Mania</string>
     <string name="action_settings">Settings</string>
+
+
+    <string name="title_overview">Movie Plot</string>
+    <string name="title_release_date">Release Date</string>
+    <string name="message_no_internet">Internet Connection Not Available</string>
+
 </resources>
