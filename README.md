@@ -1,6 +1,11 @@
 #Movie Mania
 Movie mania is an app that helps you discover popular movies. This app shows a list of movies which can be sorted on the basis of popularity and user rating.
 
+#How to run
+
+- Create a string resource named **api_key**
+- Compile and run project
+
 #Features
 
 1. Shows a list of movies in a grid style
