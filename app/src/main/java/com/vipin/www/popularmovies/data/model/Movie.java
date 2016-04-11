@@ -1,10 +1,15 @@
-package com.vipin.www.popularmovies.model;
+package com.vipin.www.popularmovies.data.model;
 
+import android.database.Cursor;
 import android.os.Parcel;
 import android.os.Parcelable;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
+import com.vipin.www.popularmovies.data.MovieContract;
+
+import java.util.ArrayList;
+import java.util.List;
 
 
 public class Movie implements Parcelable {
@@ -83,6 +88,12 @@ public class Movie implements Parcelable {
     @Expose
     private int voteCount;
 
+    public Movie(){
+        //Empty Constructor
+    }
+
+
+
     private Movie(Parcel in) {
         id = in.readInt();
         title = in.readString();
@@ -94,6 +105,8 @@ public class Movie implements Parcelable {
         popularity = in.readDouble();
         releaseDate = in.readString();
     }
+
+
 
     /**
      * @return The adult

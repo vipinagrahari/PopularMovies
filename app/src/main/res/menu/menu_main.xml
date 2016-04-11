@@ -8,11 +8,15 @@
         app:showAsAction="always">
         <menu>
             <item
+                android:id="@+id/menuSortFavourite"
+                android:title="@string/menu_sort_favourite" />
+            <item
                 android:id="@+id/menuSortPopular"
-                android:title="Most Popular" />
+                android:title="@string/menu_sort_popular" />
             <item
                 android:id="@+id/menuSortRating"
-                android:title="Top Rated" />
+                android:title="@string/menu_sort_rating" />
+
         </menu>
     </item>
 </menu>

@@ -1,7 +1,10 @@
 package com.vipin.www.popularmovies;
 
+import android.content.ContentValues;
 import android.content.Intent;
+import android.database.Cursor;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
@@ -12,13 +15,17 @@ import android.widget.AdapterView;
 import android.widget.GridView;
 import android.widget.Toast;
 
-import com.vipin.www.popularmovies.model.Discover;
-import com.vipin.www.popularmovies.model.Movie;
+
+import com.facebook.stetho.Stetho;
+import com.vipin.www.popularmovies.data.MovieContract;
+import com.vipin.www.popularmovies.data.model.Discover;
+import com.vipin.www.popularmovies.data.model.Movie;
 import com.vipin.www.popularmovies.tmdbapi.ApiService;
 import com.vipin.www.popularmovies.tmdbapi.ServiceGenerator;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Vector;
 
 import retrofit.Call;
 import retrofit.Callback;
@@ -41,40 +48,45 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        if (new Util(this).checkInternet()) {
+        Stetho.initializeWithDefaults(this);
 
-            apiService = ServiceGenerator.createService(ApiService.class);
-            gvMovie = (GridView) findViewById(R.id.gv_movie);
-            List<Movie> movies = new ArrayList<Movie>();
+        apiService = ServiceGenerator.createService(ApiService.class);
+        gvMovie = (GridView) findViewById(R.id.gv_movie);
+        List<Movie> movies = new ArrayList<Movie>();
+
+        if(savedInstanceState!=null){
+            movies=savedInstanceState.getParcelableArrayList("movies");
+        }
+        else{
             discoverMovies();
+        }
 
-            adapter = new ImageAdapter(MainActivity.this, movies);
-            gvMovie.setAdapter(adapter);
-            gvMovie.setOnItemClickListener(this);
-            gvMovie.setOnScrollListener(new AbsListView.OnScrollListener() {
-                @Override
-                public void onScrollStateChanged(AbsListView view, int scrollState) {
 
+        adapter = new ImageAdapter(MainActivity.this, movies);
+        gvMovie.setAdapter(adapter);
+        gvMovie.setOnItemClickListener(this);
+        gvMovie.setOnScrollListener(new AbsListView.OnScrollListener() {
+            @Override
+            public void onScrollStateChanged(AbsListView view, int scrollState) {
+
+            }
+
+            @Override
+            public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
+
+                if (firstVisibleItem + visibleItemCount + 10 > totalItemCount) {
+                    discoverMovies();
                 }
+            }
+        });
 
-                @Override
-                public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
+/*
+        else {
 
-
-                    if (firstVisibleItem + visibleItemCount + 10 > totalItemCount) {
-                        discoverMovies();
-                    }
-
-
-                }
-            });
-
-
-        } else {
-
-            (findViewById(R.id.layout_no_internet)).setVisibility(View.VISIBLE);
+         (findViewById(R.id.layout_no_internet)).setVisibility(View.VISIBLE);
 
         }
+        */
     }
 
 
@@ -90,7 +102,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         // Handle action bar item clicks here. The action bar will
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
-        if (new Util(this).checkInternet()) {
+        {
 
             int id = item.getItemId();
 
@@ -101,6 +113,10 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                 case R.id.menuSortRating:
                     sortBy = ApiService.RATING_DESC;
                     break;
+
+                case R.id.menuSortFavourite:
+                    getFavorites();
+                    return true;
                 default:
                     return false;
 
@@ -111,8 +127,6 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
             discoverMovies();
 
 
-        } else {
-            Toast.makeText(MainActivity.this, "No Connection", Toast.LENGTH_SHORT).show();
         }
         return super.onOptionsItemSelected(item);
 
@@ -120,30 +134,52 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     }
 
 
+    public void getFavorites() {
+
+        Cursor c = getBaseContext().getContentResolver().query(MovieContract.MovieEntry.CONTENT_URI, null, null, null, null);
+
+
+        adapter = new ImageAdapter(MainActivity.this, cursorToMovies(c));
+        gvMovie.setAdapter(adapter);
+        gvMovie.setOnItemClickListener(this);
+        gvMovie.setOnScrollListener(null);
+
+        c.close();
+
+    }
+
+
     public void discoverMovies() {
 
+        if(new Util(this).checkInternet()) {
 
-        Call<Discover> getMovie = apiService.discoverMovies(getResources().getString(R.string.api_key), ++pageCount, sortBy);
 
+            Call<Discover> getMovie = apiService.discoverMovies(getResources().getString(R.string.api_key), ++pageCount, sortBy);
 
-        getMovie.enqueue(new Callback<Discover>() {
-            @Override
-            public void onResponse(Response<Discover> response, Retrofit retrofit) {
+            getMovie.enqueue(new Callback<Discover>() {
+                @Override
+                public void onResponse(Response<Discover> response, Retrofit retrofit) {
 
-                if (response.body() != null) {
-                    List<Movie> movies = response.body().getResults();
-                    adapter.addMovies(movies);
+                    if (response.body() != null) {
+                        List<Movie> movies = response.body().getResults();
+                        adapter.addMovies(movies);
+
+                    }
+
                 }
 
-            }
+                @Override
+                public void onFailure(Throwable t) {
 
-            @Override
-            public void onFailure(Throwable t) {
-
-            }
+                }
 
 
-        });
+            });
+        }
+
+        else {
+            Toast.makeText(MainActivity.this, "No Connection", Toast.LENGTH_SHORT).show();
+        }
 
     }
 
@@ -153,6 +189,38 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         Intent intent = new Intent(MainActivity.this, MovieDetailActivity.class);
         intent.putExtra("movie", adapter.getItem(position));
         startActivity(intent);
+    }
+
+    public List<Movie> cursorToMovies(Cursor c) {
+
+        List<Movie> movies = new ArrayList<Movie>();
+        if (c.moveToFirst()) {
+            do {
+                Movie movie = new Movie();
+                System.out.println(c.getString(c.getColumnIndex(MovieContract.MovieEntry.COLUMN_TITLE)));
+
+                movie.setTitle(c.getString(c.getColumnIndex(MovieContract.MovieEntry.COLUMN_TITLE)));
+                movie.setId(c.getInt(c.getColumnIndex(MovieContract.MovieEntry.COLUMN_MOVIE_ID)));
+                movie.setBackdropPath(c.getString(c.getColumnIndex(MovieContract.MovieEntry.COLUMN_BACKDROP_PATH)));
+                movie.setPosterPath(c.getString(c.getColumnIndex(MovieContract.MovieEntry.COLUMN_POSTER_PATH)));
+                movie.setReleaseDate(c.getString(c.getColumnIndex(MovieContract.MovieEntry.COLUMN_RELEASE_DATE)));
+                movie.setOverview(c.getString(c.getColumnIndex(MovieContract.MovieEntry.COLUMN_MOVIE_OVERVIEW)));
+                movie.setPopularity(c.getDouble(c.getColumnIndex(MovieContract.MovieEntry.COLUMN_POPULARITY)));
+                movie.setVoteAverage(c.getDouble(c.getColumnIndex(MovieContract.MovieEntry.COLUMN_VOTE_AVERAGE)));
+                movie.setOriginalTitle(c.getString(c.getColumnIndex(MovieContract.MovieEntry.COLUMN_ORIGINAL_TITLE)));
+                movies.add(movie);
+
+            } while (c.moveToNext());
+        }
+        return movies;
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+
+        outState.putParcelableArrayList("movies", (ArrayList<? extends Parcelable>)adapter.movies);
+
     }
 
 

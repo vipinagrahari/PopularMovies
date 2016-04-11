@@ -1,8 +1,9 @@
 package com.vipin.www.popularmovies.tmdbapi;
 
 
-import com.vipin.www.popularmovies.model.Discover;
-import com.vipin.www.popularmovies.model.Movie;
+import com.google.gson.JsonObject;
+import com.vipin.www.popularmovies.data.model.Discover;
+import com.vipin.www.popularmovies.data.model.Movie;
 
 import retrofit.Call;
 import retrofit.http.GET;
@@ -27,5 +28,11 @@ public interface ApiService {
 
     @GET("discover/movie")
     Call<Discover> discoverMovies(@Query("api_key") String apiKey, @Query("page") int page, @Query("sort_by") String sortBy);
+
+    @GET("movie/{id}/reviews")
+    Call<JsonObject> getReview(@Path("id") int id, @Query("api_key") String apiKey);
+
+    @GET("movie/{id}/videos")
+    Call<JsonObject> getTrailers(@Path("id") int id, @Query("api_key") String apiKey);
 
 }

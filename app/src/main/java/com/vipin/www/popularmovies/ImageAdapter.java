@@ -9,7 +9,7 @@ import android.widget.BaseAdapter;
 import android.widget.ImageView;
 
 import com.squareup.picasso.Picasso;
-import com.vipin.www.popularmovies.model.Movie;
+import com.vipin.www.popularmovies.data.model.Movie;
 import com.vipin.www.popularmovies.tmdbapi.ApiService;
 
 import java.util.List;
@@ -29,6 +29,7 @@ public class ImageAdapter extends BaseAdapter {
 
         mContext = context;
         this.movies = movies;
+
     }
 
     @Override
@@ -78,6 +79,7 @@ public class ImageAdapter extends BaseAdapter {
         Picasso.with(mContext)
                 .load(ApiService.BASE_IMAGE_URL + ApiService.RES_POSTER + getItem(position).getPosterPath())
                 .placeholder(R.drawable.placeholder)
+                .error(R.drawable.placeholder)
                 .into(holder.posterImage);
         return convertView;
     }
@@ -85,8 +87,6 @@ public class ImageAdapter extends BaseAdapter {
 
     private static class ViewHolder {
         ImageView posterImage;
-
-
     }
 
 

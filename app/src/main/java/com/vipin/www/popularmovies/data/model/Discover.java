@@ -1,4 +1,4 @@
-package com.vipin.www.popularmovies.model;
+package com.vipin.www.popularmovies.data.model;
 
 /**
  * Created by vipin on 20-12-2015.

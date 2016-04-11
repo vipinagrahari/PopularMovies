@@ -33,6 +33,12 @@
                 android:value=".MainActivity" />
 
         </activity>
+
+        <provider android:authorities="com.vipin.www.popularmovies"
+            android:exported="false"
+            android:name=".data.MovieProvider"/>
+
+
     </application>
 
 </manifest>
