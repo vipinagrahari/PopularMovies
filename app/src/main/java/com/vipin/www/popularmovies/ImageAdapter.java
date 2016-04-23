@@ -83,7 +83,9 @@ public class ImageAdapter extends BaseAdapter {
         return convertView;
     }
 
-
+    /*
+    Interface to notify mainactivity to load detail fragment for first movie in master-detail layout mode
+     */
     public interface InitDetailFragment {
         void onMovieLoaded(Movie movie);
     }

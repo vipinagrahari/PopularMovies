@@ -39,13 +39,6 @@ public class MainActivity extends AppCompatActivity
 
         }
 
-/*
-        else {
-
-         (findViewById(R.id.layout_no_internet)).setVisibility(View.VISIBLE);
-
-        }
-        */
     }
 
 

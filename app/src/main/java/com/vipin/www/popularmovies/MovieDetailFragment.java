@@ -413,7 +413,7 @@ public class MovieDetailFragment extends Fragment {
                 @Override
                 public void onBitmapFailed(Drawable errorDrawable) {
 
-                    // Toast.makeText(getActivity(), "Failed to load backdrop image", Toast.LENGTH_SHORT).show();
+                    // Do nothing
 
                 }
 
