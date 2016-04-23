@@ -48,18 +48,18 @@
 
     </android.support.design.widget.AppBarLayout>
 
-
     <include layout="@layout/content_movie_detail" />
 
     <android.support.design.widget.FloatingActionButton
         android:id="@+id/fab_favorite"
-        android:layout_height="wrap_content"
         android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:layout_gravity="bottom|end"
         android:layout_margin="@dimen/fab_margin"
-        android:src="@drawable/ic_favorite_border_white_24dp"
         android:clickable="true"
-        android:onClick="favorite"
+        android:onClick=""
+        android:src="@drawable/ic_favorite_border_white_24dp"
+
         />
 
 

@@ -1,5 +1,6 @@
 package com.vipin.www.popularmovies.tmdbapi;
 
+
 import com.squareup.okhttp.OkHttpClient;
 
 import java.net.CookieManager;
@@ -13,7 +14,9 @@ import retrofit.Retrofit;
  */
 public class ServiceGenerator {
 
+
     private static OkHttpClient httpClient = new OkHttpClient();
+
 
     private static Retrofit.Builder builder =
             new Retrofit.Builder()
@@ -23,8 +26,10 @@ public class ServiceGenerator {
 
     public static <S> S createService(Class<S> serviceClass) {
 
+
         CookieManager cookieManager = new CookieManager();
         cookieManager.setCookiePolicy(CookiePolicy.ACCEPT_ALL);
+
         httpClient.setCookieHandler(cookieManager);
         Retrofit retrofit = builder.client(httpClient).build();
         return retrofit.create(serviceClass);

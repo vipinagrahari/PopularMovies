@@ -13,17 +13,14 @@
     tools:context="com.vipin.www.popularmovies.MainActivity"
     tools:showIn="@layout/activity_main">
 
+   <fragment
+       android:id="@+id/fragment_movie_list"
+       android:name="com.vipin.www.popularmovies.MovieListFragment"
+       android:layout_width="match_parent"
+       android:layout_height="match_parent"
+       tools:layout="@layout/fragment_movie_list">
 
-    <GridView
-        android:id="@+id/gv_movie"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:columnWidth="150dp"
-        android:gravity="center"
-        android:numColumns="auto_fit"
-        android:scrollbars="none"
-        android:stretchMode="columnWidth"
-        android:verticalSpacing="5dp" />
+   </fragment>
 
 
 </RelativeLayout>

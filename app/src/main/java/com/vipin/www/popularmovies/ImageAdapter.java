@@ -1,7 +1,6 @@
 package com.vipin.www.popularmovies;
 
 import android.content.Context;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -35,7 +34,6 @@ public class ImageAdapter extends BaseAdapter {
     @Override
     public int getCount() {
 
-        Log.e("Size", movies.size() + "");
         return movies.size();
 
 
@@ -52,6 +50,7 @@ public class ImageAdapter extends BaseAdapter {
     }
 
     public void addMovies(List<Movie> moreMovies) {
+        if (movies.size() == 0) ((MainActivity) mContext).onMovieLoaded(moreMovies.get(0));
         movies.addAll(moreMovies);
         this.notifyDataSetChanged();
     }
@@ -84,6 +83,10 @@ public class ImageAdapter extends BaseAdapter {
         return convertView;
     }
 
+
+    public interface InitDetailFragment {
+        void onMovieLoaded(Movie movie);
+    }
 
     private static class ViewHolder {
         ImageView posterImage;

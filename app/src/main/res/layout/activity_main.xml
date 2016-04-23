@@ -8,8 +8,10 @@
     tools:context="com.vipin.www.popularmovies.MainActivity">
 
     <android.support.design.widget.AppBarLayout
+        android:id="@+id/app_bar_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+
         android:theme="@style/AppTheme.AppBarOverlay">
 
         <android.support.v7.widget.Toolbar
@@ -23,11 +25,5 @@
 
 
     <include layout="@layout/content_main" />
-
-    <include
-        android:id="@+id/layout_no_internet"
-        layout="@layout/element_no_internet"
-        android:visibility="gone" />
-
 
 </android.support.design.widget.CoordinatorLayout>
